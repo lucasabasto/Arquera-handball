@@ -1,0 +1,122 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0f2a43"><link rel="manifest" href="manifest.json"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png"><title>Arquera Handball</title>
+<style>
+:root{--bg:#eef2f5;--card:#fff;--ink:#0f2a43;--mut:#66788a;--line:#d9e1e8;--ok:#1f7a4c;--mid:#c98a00;--bad:#b83a3a;--ball:#e8590c}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+.wrap{max-width:720px;margin:0 auto;padding:12px}h1{font-size:1.25rem;margin:6px 0 10px}h2{font-size:1rem;margin:0 0 10px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;margin-bottom:12px}
+nav{display:flex;gap:6px;position:sticky;top:0;background:var(--bg);padding:6px 0;z-index:5}
+nav button{flex:1;background:#fff;color:var(--ink);border:1px solid var(--line);padding:11px 4px;border-radius:10px}
+nav button.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+button{border:0;border-radius:12px;padding:14px 8px;font-size:1rem;font-weight:700;color:#fff;cursor:pointer;touch-action:manipulation;background:var(--ink)}
+button:active{transform:scale(.98)}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--ball);outline-offset:2px}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}.g3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.ok{background:var(--ok)}.bad{background:var(--bad)}.gr{background:#667788}.or{background:var(--ball)}.pen{background:#6b4ba1}
+label{display:block;font-size:.8rem;color:var(--mut);font-weight:600;margin-bottom:3px}
+input,select{width:100%;padding:11px;border:1px solid var(--line);border-radius:10px;font-size:1rem;background:#fff;color:var(--ink)}
+.timer{text-align:center;font-size:2.8rem;font-weight:800;font-variant-numeric:tabular-nums;margin:2px 0 8px}
+.m{text-align:center;background:#f7f9fb;border:1px solid var(--line);border-radius:10px;padding:8px 4px}.m b{display:block;font-size:1.7rem}.m span{font-size:.75rem;color:var(--mut)}
+.big{padding:26px 6px;font-size:1.25rem;width:100%}.tiny{font-size:.8rem;color:var(--mut);line-height:1.45}
+.bl{display:flex;justify-content:space-between;font-size:.9rem;margin-top:10px}.bar{height:12px;background:#e6ecf1;border-radius:6px;overflow:hidden;margin-top:4px}.bar i{display:block;height:100%}
+.hero{display:flex;align-items:center;gap:16px}.hero svg{flex:0 0 130px}.chip{display:inline-block;padding:3px 9px;border-radius:99px;color:#fff;font-weight:700;font-size:.85rem}
+.row{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:10px 0;border-top:1px solid var(--line);font-size:.92rem}.row:first-of-type{border-top:0}
+.row button{padding:7px 10px;font-size:.85rem}.link{background:none;color:var(--ink);text-align:left;padding:0;font-weight:600}
+table{width:100%;border-collapse:collapse;font-size:.84rem}td,th{padding:6px;border-bottom:1px solid var(--line);text-align:left}
+#inst{display:none;align-items:center;justify-content:space-between;gap:10px}
+@media(max-width:480px){.hero{flex-direction:column;align-items:stretch;text-align:center}.hero svg{margin:auto}}
+@media print{nav,.np,#tp,#ts,#inst{display:none!important}#tr{display:block!important}body{background:#fff}.card{break-inside:avoid}}
+</style></head><body><div class="wrap">
+<h1>🤾‍♀️ Arquera Handball</h1>
+<div class="card" id="inst"><span class="tiny">Instalá la app en tu celular</span><button class="or" id="ib">Instalar</button></div>
+<nav><button class="on" data-t="tp">Partido</button><button data-t="tr">Informe</button><button data-t="ts">Temporada</button></nav>
+
+<section id="tp">
+<div class="card"><div class="g2"><div><label for="date">Fecha</label><input id="date" type="date"></div>
+<div><label for="period">Período</label><select id="period"><option>1° Tiempo</option><option>2° Tiempo</option><option>Extra</option></select></div></div>
+<div style="margin-top:10px"><label for="opp">Rival</label><input id="opp" placeholder="Ej.: Club A vs Club B"></div></div>
+<div class="card"><div class="timer" id="timer">00:00</div><div class="g3"><button onclick="tStart()">▶ Iniciar</button><button class="gr" onclick="tPause()">⏸ Pausar</button><button class="gr" onclick="tReset()">↺ Cero</button></div></div>
+<div class="card"><div class="g3"><div class="m"><b id="sv">0</b><span>Atajadas</span></div><div class="m"><b id="gl">0</b><span>Goles</span></div><div class="m"><b id="pc">0%</b><span>Efectividad</span></div></div>
+<div class="g2" style="margin-top:12px"><button class="ok big" onclick="add('Atajada')">🧤 ATAJADA</button><button class="bad big" onclick="add('Gol')">🥅 GOL</button></div>
+<div class="g2" style="margin-top:10px"><button class="gr" onclick="undo()">↩ Deshacer</button><button class="or" onclick="save()">💾 Guardar partido</button></div>
+<button class="gr" style="width:100%;margin-top:10px" onclick="newM()">🆕 Nuevo partido</button></div>
+<div class="card"><h2>🎯 Penal de 7 metros</h2><label for="pl">Jugadora rival</label><input id="pl" placeholder="Nombre o número, ej.: #10 Pérez">
+<div class="g2" style="margin-top:10px"><button class="ok" onclick="addP('Atajada')">🧤 Atajado</button><button class="bad" onclick="addP('Gol')">🥅 Gol</button></div></div>
+<div class="card"><h2>Últimas acciones</h2><table><tbody id="log"></tbody></table></div>
+</section>
+
+<section id="tr" hidden><div class="card np"><label for="rs">Partido</label><select id="rs" onchange="rep()"></select></div><div id="rp"></div>
+<div class="g2 np"><button class="or" onclick="share()">📤 Compartir</button><button onclick="print()">🖨 PDF / Imprimir</button></div></section>
+
+<section id="ts" hidden><div id="ss"></div>
+<div class="card np"><h2>Respaldo de datos</h2><p class="tiny">Los partidos se guardan en este teléfono. Hacé un respaldo de vez en cuando para no perderlos.</p>
+<div class="g2"><button onclick="bk()">⬇ Guardar respaldo</button><button class="gr" onclick="$('fi').click()">⬆ Recuperar</button></div>
+<button class="gr" style="width:100%;margin-top:10px" onclick="csv()">Exportar a Excel (CSV)</button><input id="fi" type="file" accept=".json" hidden></div></section>
+</div>
+<script>
+const $=i=>document.getElementById(i),LS="arquera_handball_historial_v4",CU="arquera_handball_actual_v4";
+let ev=[],base=0,st=null,H=[],tmr=null,lock=null,dp=null;
+const pct=v=>(v*100).toFixed(1).replace(".",",")+"%",col=p=>p>=.33?"var(--ok)":p>=.25?"var(--mid)":"var(--bad)";
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const cur=()=>base+(st?Math.floor((Date.now()-st)/1000):0),fmt=s=>String(Math.floor(s/60)).padStart(2,"0")+":"+String(s%60).padStart(2,"0");
+const today=()=>new Date(Date.now()-new Date().getTimezoneOffset()*6e4).toISOString().slice(0,10);
+const load=()=>{try{H=JSON.parse(localStorage.getItem(LS)||"[]")}catch(e){H=[]}},put=()=>{try{localStorage.setItem(LS,JSON.stringify(H))}catch(e){alert("No se pudo guardar. Revisá el espacio del teléfono.")}};
+function S(list){const s=list.filter(e=>e.type=="Atajada").length,g=list.length-s;return{saves:s,goals:g,shots:list.length,pct:list.length?s/list.length:0}}
+function mo(){const per=p=>S(ev.filter(e=>e.period===p&&e.type)),pv=ev.filter(e=>e.source==="Penal 7m");
+return{id:Date.now(),date:$("date").value,opponent:$("opp").value||"Sin rival",...S(ev),firstHalf:per("1° Tiempo"),secondHalf:per("2° Tiempo"),penalties:S(pv),penaltyDetails:pv,duration:cur()}}
+function draw(){const t=S(ev);$("sv").textContent=t.saves;$("gl").textContent=t.goals;$("pc").textContent=pct(t.pct);$("timer").textContent=fmt(cur());
+$("log").innerHTML=ev.slice(-8).reverse().map((e,i)=>`<tr><td>${ev.length-i}</td><td>${e.period}</td><td>${e.type=="Atajada"?"🧤":"🥅"} ${e.type}</td><td>${e.source=="Penal 7m"?"7m "+esc(e.player):""}</td><td>${e.matchTime}</td></tr>`).join("")||'<tr><td class="tiny">Tocá ATAJADA o GOL para empezar.</td></tr>';
+try{localStorage.setItem(CU,JSON.stringify({date:$("date").value,opp:$("opp").value,period:$("period").value,ev,sec:cur()}))}catch(e){}}
+function add(type,src="Juego",pl=""){ev.push({type,source:src,player:pl,period:$("period").value,matchTime:fmt(cur())});draw();navigator.vibrate&&navigator.vibrate(35)}
+function addP(type){const p=$("pl").value.trim();if(type=="Atajada"&&!p&&!confirm("No cargaste jugadora. ¿Registrar como 'Sin identificar'?"))return;add(type,"Penal 7m",p||"Sin identificar");$("pl").value=""}
+function undo(){ev.pop();draw()}
+async function tStart(){if(st)return;st=Date.now();tmr=setInterval(draw,1000);try{lock=await navigator.wakeLock.request("screen")}catch(e){}}
+function tPause(){if(st){base=cur();st=null;clearInterval(tmr)}lock&&lock.release&&lock.release().catch(()=>{});draw()}
+function tReset(){if(confirm("¿Reiniciar el cronómetro a 00:00?")){tPause();base=0;draw()}}
+function save(){if(!ev.length)return alert("Todavía no hay atajadas ni goles registrados.");H.unshift(mo());put();alert("Partido guardado. Ya lo ves en Informe y Temporada.")}
+function newM(){if(ev.length&&!confirm("¿Empezar un partido nuevo? Si no lo guardaste, se pierde el conteo actual."))return;tPause();ev=[];base=0;$("date").value=today();$("opp").value="";$("period").value="1° Tiempo";draw()}
+
+function rep(){const s=$("rs"),k=s.value;s.innerHTML='<option value="c">Partido actual (en curso)</option>'+H.map((m,i)=>`<option value="${i}">${m.date||""} · ${esc(m.opponent)}</option>`).join("");
+s.value=[...s.options].some(o=>o.value===k)?k:(H.length&&k!=="c"?"0":"c");if(!k&&H.length)s.value="0";
+const m=s.value==="c"?mo():H[+s.value];window.cm=m;const a=m.firstHalf||S([]),b=m.secondHalf||S([]),p=m.penalties||S([]),C=326.7;
+const v=m.pct>=.33?"Muy buen partido":m.pct>=.25?"Partido aceptable":"A seguir trabajando";
+const bar=(l,x)=>`<div class="bl"><span>${l}</span><b>${x.saves} de ${x.shots} · ${pct(x.pct)}</b></div><div class="bar"><i style="width:${x.pct*100}%;background:${col(x.pct)}"></i></div>`;
+const by={};(m.penaltyDetails||[]).forEach(e=>{const n=e.player||"Sin identificar";(by[n]=by[n]||{s:0,g:0})[e.type=="Atajada"?"s":"g"]++});
+let ins="";if(a.shots&&b.shots){const d=(b.pct-a.pct)*100;ins=Math.abs(d)<3?"Rendimiento parejo en los dos tiempos.":d>0?`Mejoró ${d.toFixed(1).replace(".",",")} puntos en el 2° tiempo.`:`Bajó ${(-d).toFixed(1).replace(".",",")} puntos en el 2° tiempo.`}
+$("rp").innerHTML=`<div class="card"><div class="tiny">${m.date||""}</div><h2>${esc(m.opponent)}</h2><div class="hero">
+<svg viewBox="0 0 130 130"><circle cx="65" cy="65" r="52" fill="none" stroke="#e6ecf1" stroke-width="14"/><circle cx="65" cy="65" r="52" fill="none" stroke="${col(m.pct)}" stroke-width="14" stroke-linecap="round" stroke-dasharray="${C*Math.min(1,m.pct)} ${C}" transform="rotate(-90 65 65)"/><text x="65" y="72" text-anchor="middle" font-size="22" font-weight="800" fill="#0f2a43">${pct(m.pct)}</text></svg>
+<div><span class="chip" style="background:${col(m.pct)}">${v}</span><p style="margin:10px 0 4px"><b>${m.saves}</b> atajadas de <b>${m.shots}</b> lanzamientos</p><div class="tiny">${m.goals} goles recibidos · ${fmt(m.duration||0)} registrados</div></div></div>
+<div class="tiny" style="margin-top:8px">Referencia: 33% o más muy bueno, 25% a 33% aceptable.</div></div>
+<div class="card"><h2>Por tiempo</h2>${bar("1° Tiempo",a)}${bar("2° Tiempo",b)}${ins?`<p class="tiny" style="margin-top:12px">💡 ${ins}</p>`:""}</div>
+<div class="card"><h2>Penales de 7 metros</h2>${p.shots?bar("Penales atajados",p):'<p class="tiny">No hubo penales en este partido.</p>'}${Object.entries(by).map(([n,x])=>`<div class="row"><span>${esc(n)}</span><span>🧤 ${x.s} · 🥅 ${x.g}</span></div>`).join("")}</div>`}
+function share(){const m=window.cm,a=m.firstHalf||{},b=m.secondHalf||{},p=m.penalties||{shots:0,saves:0};
+const t=`🤾‍♀️ ${m.opponent} (${m.date||""})\n🧤 ${m.saves} atajadas de ${m.shots} lanzamientos = ${pct(m.pct)}\n1° T: ${a.saves}/${a.shots} (${pct(a.pct||0)}) · 2° T: ${b.saves}/${b.shots} (${pct(b.pct||0)})\n🎯 7m: ${p.saves}/${p.shots} atajados`;
+navigator.share?navigator.share({text:t}).catch(()=>{}):navigator.clipboard.writeText(t).then(()=>alert("Resumen copiado. Pegalo en WhatsApp."))}
+
+function seas(){const B=$("ss");if(!H.length){B.innerHTML='<div class="card"><p class="tiny">Guardá tu primer partido y acá vas a ver promedios, ranking y evolución.</p></div>';return}
+const sum=k=>H.reduce((a,m)=>a+(m[k]||0),0),T=sum("shots"),Sv=sum("saves"),avg=H.reduce((a,m)=>a+m.pct,0)/H.length,ps=H.reduce((a,m)=>a+(m.penalties?.saves||0),0),pt=H.reduce((a,m)=>a+(m.penalties?.shots||0),0);
+const rk=H.map((m,i)=>({m,i})).filter(x=>x.m.shots).sort((a,b)=>b.m.pct-a.m.pct),ch=H.slice().reverse().filter(m=>m.shots);
+const W=300,Hh=110,pts=ch.map((m,i)=>[ch.length>1?10+i*(W-20)/(ch.length-1):W/2,Hh-10-Math.min(1,m.pct/.6)*(Hh-20)]);
+const line=pts.length>1?`<polyline fill="none" stroke="#0f2a43" stroke-width="2.5" points="${pts.map(p=>p.join(",")).join(" ")}"/>`:"";
+const y33=Hh-10-(.33/.6)*(Hh-20);
+B.innerHTML=`<div class="card"><h2>Resumen de la temporada</h2><div class="g3"><div class="m"><b>${H.length}</b><span>Partidos</span></div><div class="m"><b>${pct(avg)}</b><span>Promedio por partido</span></div><div class="m"><b>${pct(T?Sv/T:0)}</b><span>Efectividad global</span></div></div>
+<div class="g3" style="margin-top:10px"><div class="m"><b>${Sv}</b><span>Atajadas</span></div><div class="m"><b>${T-Sv}</b><span>Goles</span></div><div class="m"><b>${pt?pct(ps/pt):"–"}</b><span>Penales (${ps}/${pt})</span></div></div></div>
+<div class="card"><h2>Evolución partido a partido</h2><svg viewBox="0 0 ${W} ${Hh}" width="100%"><line x1="0" x2="${W}" y1="${y33}" y2="${y33}" stroke="#1f7a4c" stroke-dasharray="4 4"/><text x="4" y="${y33-4}" font-size="9" fill="#1f7a4c">33%</text>${line}${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="4.5" fill="${col(ch[i].pct).replace("var(--ok)","#1f7a4c").replace("var(--mid)","#c98a00").replace("var(--bad)","#b83a3a")}"/>`).join("")}</svg></div>
+<div class="card"><h2>Ranking de partidos</h2>${rk.map((x,r)=>`<div class="row"><span>${r==0?"🥇":r==1?"🥈":r==2?"🥉":r+1+"."} ${esc(x.m.opponent)}<br><span class="tiny">${x.m.date||""} · ${x.m.saves}/${x.m.shots}</span></span><span><span class="chip" style="background:${col(x.m.pct)}">${pct(x.m.pct)}</span> <button class="gr" onclick="go(${x.i})">Ver</button> <button class="bad" aria-label="Borrar" onclick="del(${x.i})">✕</button></span></div>`).join("")}</div>`}
+function go(i){tab("tr");$("rs").value=i;rep()}
+function del(i){if(confirm("¿Borrar este partido?")){H.splice(i,1);put();seas()}}
+function dl(name,txt,type){const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([txt],{type}));a.download=name;a.click()}
+function bk(){dl("respaldo_arquera_handball.json",JSON.stringify(H),"application/json")}
+$("fi").onchange=e=>{const f=e.target.files[0];if(!f)return;f.text().then(t=>{try{const d=JSON.parse(t);if(!Array.isArray(d))throw 0;if(confirm(`Se encontraron ${d.length} partidos. ¿Reemplazar los actuales?`)){H=d;put();seas();alert("Respaldo recuperado.")}}catch(x){alert("El archivo no es un respaldo válido.")}})};
+function csv(){if(!H.length)return alert("No hay partidos guardados.");const r=[["Fecha","Rival","Atajadas","Goles","Lanzamientos","Efectividad","1T atajadas","1T lanz.","1T efect.","2T atajadas","2T lanz.","2T efect.","Penales atajados","Penales totales"]];
+H.forEach(m=>{const a=m.firstHalf||{},b=m.secondHalf||{},p=m.penalties||{};r.push([m.date,m.opponent,m.saves,m.goals,m.shots,pct(m.pct),a.saves||0,a.shots||0,pct(a.pct||0),b.saves||0,b.shots||0,pct(b.pct||0),p.saves||0,p.shots||0])});
+dl("historial_arquera_handball.csv","\uFEFF"+r.map(x=>x.map(v=>`"${String(v??"").replace(/"/g,'""')}"`).join(";")).join("\n"),"text/csv")}
+
+function tab(t){["tp","tr","ts"].forEach(x=>$(x).hidden=x!==t);document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===t));if(t=="tr")rep();if(t=="ts")seas()}
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>tab(b.dataset.t));
+["date","opp","period"].forEach(i=>$(i).addEventListener("input",draw));
+addEventListener("beforeinstallprompt",e=>{e.preventDefault();dp=e;$("inst").style.display="flex"});
+$("ib").onclick=()=>{dp&&dp.prompt();$("inst").style.display="none"};
+if("serviceWorker"in navigator)addEventListener("load",()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
+load();$("date").value=today();
+try{const c=JSON.parse(localStorage.getItem(CU)||"null");if(c){if(c.date)$("date").value=c.date;$("opp").value=c.opp||"";if(c.period)$("period").value=c.period;ev=c.ev||[];base=c.sec||0}}catch(e){}
+draw();
+</script></body></html>
